@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import java.util.Optional;
 
 public interface PhotoRepository extends JpaRepository<Photo, Long> {
     Page<Photo> findByIsPublic(boolean isPublic, Pageable pageable);
@@ -17,4 +18,6 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
     
     @Query("SELECT COUNT(c) FROM Photo p JOIN p.comments c WHERE c.user.username = :username")
     long countCommentsByUsername(String username);
+    
+    Optional<Photo> findByFileName(String fileName);
 }

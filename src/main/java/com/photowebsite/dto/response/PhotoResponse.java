@@ -14,8 +14,9 @@ public class PhotoResponse {
     private String contentType;
     private long size;
     private String category;
-    private boolean isPublic;
+    private Boolean isPublic;
     private String uploadedBy;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private byte[] data;
 } 

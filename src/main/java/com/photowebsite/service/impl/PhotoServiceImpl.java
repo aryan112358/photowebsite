@@ -122,4 +122,11 @@ public class PhotoServiceImpl implements PhotoService {
         return photoRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Photo not found"));
     }
+
+    @Override
+    public PhotoResponse getPhotoByFileName(String fileName) {
+        Photo photo = photoRepository.findByFileName(fileName)
+            .orElseThrow(() -> new RuntimeException("Photo not found"));
+        return mapToResponse(photo);
+    }
 } 

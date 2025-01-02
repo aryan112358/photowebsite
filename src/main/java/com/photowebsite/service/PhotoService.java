@@ -18,4 +18,5 @@ public interface PhotoService {
     long countUserPhotoLikes(String username);
     long countUserPhotoComments(String username);
     Photo getPhotoEntity(Long id);
+    PhotoResponse getPhotoByFileName(String fileName);
 }

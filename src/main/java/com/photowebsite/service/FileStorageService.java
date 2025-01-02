@@ -13,13 +13,21 @@ import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
 import com.photowebsite.exception.StorageException;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import java.net.MalformedURLException;
 
 @Service
-@RequiredArgsConstructor
 public class FileStorageService {
 
     @Value("${file.upload-dir:uploads}")
     private String uploadDir;
+
+    private final Path fileStorageLocation;
+
+    public FileStorageService(@Value("${file.upload-dir:uploads}") String uploadDir) {
+        this.fileStorageLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
+    }
 
     @PostConstruct
     public void init() {
@@ -48,5 +56,29 @@ public class FileStorageService {
         } catch (IOException ex) {
             throw new RuntimeException("Could not delete file " + fileName, ex);
         }
+    }
+
+    public Resource loadFileAsResource(String fileName) {
+        try {
+            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists()) {
+                return resource;
+            } else {
+                throw new RuntimeException("File not found " + fileName);
+            }
+        } catch (MalformedURLException ex) {
+            throw new RuntimeException("File not found " + fileName, ex);
+        }
+    }
+
+    public String getContentType(String fileName) {
+        String contentType = "application/octet-stream";
+        try {
+            contentType = Files.probeContentType(Paths.get(fileName));
+        } catch (IOException ex) {
+            // Use default content type if detection failed
+        }
+        return contentType;
     }
 } 
